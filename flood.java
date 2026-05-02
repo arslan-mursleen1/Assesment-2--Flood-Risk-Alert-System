@@ -28,7 +28,7 @@ public class Flood {
         sc.close();
     }
 
-    // Input: area names and rainfall data
+    // ───────── INPUT MODULE (WITH EXCEPTION HANDLING) ─────────
     static void collectInput(Scanner sc, String[] areaNames, double[][] rainfall) {
 
         System.out.println("╔══════════════════════════════════════╗");
@@ -37,18 +37,38 @@ public class Flood {
         System.out.println("Enter rainfall data for " + NUM_AREAS + " areas.\n");
 
         for (int i = 0; i < NUM_AREAS; i++) {
+
             System.out.print("Enter name for Area " + (i + 1) + ": ");
             areaNames[i] = sc.next();
 
             for (int j = 0; j < NUM_DAYS; j++) {
-                System.out.print("  Day " + (j + 1) + " rainfall (mm): ");
-                rainfall[i][j] = sc.nextDouble();
+
+                while (true) {
+                    try {
+                        System.out.print("  Day " + (j + 1) + " rainfall (mm): ");
+                        double value = sc.nextDouble();
+
+                        // validation: no negative values
+                        if (value < 0) {
+                            System.out.println("❌ Rainfall cannot be negative. Try again.");
+                            continue;
+                        }
+
+                        rainfall[i][j] = value;
+                        break;
+
+                    } catch (Exception e) {
+                        System.out.println("❌ Invalid input! Please enter a numeric value.");
+                        sc.next(); // clear invalid input
+                    }
+                }
             }
+
             System.out.println();
         }
     }
 
-    // Process: calculate average rainfall
+    // ───────── CALCULATE AVERAGES ─────────
     static void calculateAverages(double[][] rainfall, double[] avgRainfall) {
 
         for (int i = 0; i < NUM_AREAS; i++) {
@@ -62,7 +82,7 @@ public class Flood {
         }
     }
 
-    // Decision: assign risk levels
+    // ───────── ASSIGN RISK LEVELS ─────────
     static void assignRiskLevels(double[] avgRainfall, String[] riskLevel) {
 
         for (int i = 0; i < NUM_AREAS; i++) {
@@ -79,7 +99,7 @@ public class Flood {
         }
     }
 
-    // Output: display formatted report
+    // ───────── DISPLAY REPORT ─────────
     static void displayReport(String[] areaNames, double[] avgRainfall, String[] riskLevel) {
 
         System.out.println("╔══════════════════════════════════════════════╗");
@@ -93,8 +113,8 @@ public class Flood {
             String indicator;
             switch (riskLevel[i]) {
                 case "LOW": indicator = "LOW"; break;
-                case "MEDIUM": indicator = " MEDIUM"; break;
-                case "HIGH": indicator = " HIGH"; break;
+                case "MEDIUM": indicator = "MEDIUM"; break;
+                case "HIGH": indicator = "HIGH"; break;
                 default: indicator = "CRITICAL";
             }
 
@@ -106,7 +126,7 @@ public class Flood {
         System.out.println();
     }
 
-    // Find area with highest rainfall
+    // ───────── FIND HIGHEST RISK AREA ─────────
     static void findHighestRisk(String[] areaNames, double[] avgRainfall) {
 
         int maxIndex = 0;
@@ -122,18 +142,20 @@ public class Flood {
         System.out.println();
     }
 
-    // While loop: check for critical alerts
+    // ───────── EMERGENCY ALERT MODULE ─────────
     static void checkEmergencyAlert(String[] areaNames, String[] riskLevel) {
 
         int i = 0;
         boolean alert = false;
 
         while (i < NUM_AREAS) {
+
             if (riskLevel[i].equals("CRITICAL")) {
-                System.out.println(" EMERGENCY ALERT: " + areaNames[i]
+                System.out.println("EMERGENCY ALERT: " + areaNames[i]
                         + " is at CRITICAL flood risk!");
                 alert = true;
             }
+
             i++;
         }
 
